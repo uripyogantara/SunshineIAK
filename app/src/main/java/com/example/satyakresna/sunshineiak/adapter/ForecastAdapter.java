@@ -9,12 +9,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.satyakresna.sunshineiak.R;
-import com.example.satyakresna.sunshineiak.model.DummyForecast;
+import com.example.satyakresna.sunshineiak.model.WeatherItem;
+import com.example.satyakresna.sunshineiak.utilities.SunshineWeatherUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.R.attr.data;
+import static com.example.satyakresna.sunshineiak.R.string.day;
+import static com.example.satyakresna.sunshineiak.R.string.weather;
 
 /**
  * Created by satyakresna on 06-Aug-17.
@@ -22,32 +28,59 @@ import butterknife.ButterKnife;
 
 public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = ForecastAdapter.class.getSimpleName();
-    private List<DummyForecast> dummyForecastList;
+    private List<WeatherItem> weatherItemList = new ArrayList<>();
 
-    public ForecastAdapter(List<DummyForecast> dummyForecastList) {
-        this.dummyForecastList = dummyForecastList;
+    private static final int VIEW_TODAY = 0;
+    private static final int VIEW_OTHER = 1;
+
+    public ForecastAdapter(List<WeatherItem> weatherItemList) {
+        this.weatherItemList = weatherItemList;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        int layoutFromListItem = R.layout.row_forecast_item;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
+        if (viewType == VIEW_TODAY) {
+            Context context = parent.getContext();
+            int layoutFromListItem = R.layout.row_today_forecast;
+            LayoutInflater inflater = LayoutInflater.from(context);
+            boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutFromListItem, parent, shouldAttachToParentImmediately);
-        ForecastViewHolder viewHolder = new ForecastViewHolder(view);
-        return viewHolder;
+            View view = inflater.inflate(layoutFromListItem, parent, shouldAttachToParentImmediately);
+            TodayViewHolder viewHolder = new TodayViewHolder(view);
+            return viewHolder;
+        } else {
+            Context context = parent.getContext();
+            int layoutFromListItem = R.layout.row_forecast_item;
+            LayoutInflater inflater = LayoutInflater.from(context);
+            boolean shouldAttachToParentImmediately = false;
+
+            View view = inflater.inflate(layoutFromListItem, parent, shouldAttachToParentImmediately);
+            ForecastViewHolder viewHolder = new ForecastViewHolder(view);
+            return viewHolder;
+        }
+
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ForecastViewHolder) holder).bind(dummyForecastList.get(position));
+        if (getItemViewType(position) == VIEW_TODAY) {
+            ((TodayViewHolder) holder).bind(weatherItemList.get(position));
+        } else {
+            ((ForecastViewHolder) holder).bind(weatherItemList.get(position), position);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return dummyForecastList.size();
+        return weatherItemList.size();
+    }
+
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return VIEW_TODAY;
+        } else {
+            return VIEW_OTHER;
+        }
     }
 
     public class ForecastViewHolder extends RecyclerView.ViewHolder {
@@ -62,12 +95,40 @@ public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(DummyForecast dummyForecast) {
-            weatherIcon.setImageResource(dummyForecast.getWeatherID());
-            day.setText(dummyForecast.getDay());
-            weather.setText(dummyForecast.getWeather());
-            minTemp.setText(dummyForecast.getMinTemp()+"\u00b0");
-            maxTemp.setText(dummyForecast.getMaxTemp()+"\u00b0");
+        public void bind(WeatherItem data, final int position) {
+            weatherIcon.setImageResource(
+                    SunshineWeatherUtils.getSmallArtResourceIdForWeatherCondition(
+                            data.getWeather().get(0).getId()
+                    )
+            );
+            day.setText(data.getReadableDateTime(position));
+            weather.setText(data.getWeather().get(0).getDescription());
+            minTemp.setText(data.getTemp().getResolvedTemp(data.getTemp().getMin()));
+            maxTemp.setText(data.getTemp().getResolvedTemp(data.getTemp().getMax()));
+        }
+    }
+
+    public class TodayViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.iv_weather_icon_today) ImageView weatherIconToday;
+        @BindView(R.id.tv_day_today) TextView dayToday;
+        @BindView(R.id.tv_weather_today) TextView weatherToday;
+        @BindView(R.id.tv_min_temp_today) TextView minTempToday;
+        @BindView(R.id.tv_max_temp_today) TextView maxTempToday;
+        public TodayViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(WeatherItem data) {
+            weatherIconToday.setImageResource(
+                    SunshineWeatherUtils.getSmallArtResourceIdForWeatherCondition(
+                            data.getWeather().get(0).getId()
+                    )
+            );
+            dayToday.setText(data.getTodayReadableTime());
+            weatherToday.setText(data.getWeather().get(0).getDescription());
+            minTempToday.setText(data.getTemp().getResolvedTemp(data.getTemp().getMin()));
+            maxTempToday.setText(data.getTemp().getResolvedTemp(data.getTemp().getMax()));
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.example.satyakresna.sunshineiak.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,5 +63,21 @@ public class WeatherItem {
 
     public void setWeather(List<Weather> weather) {
         this.weather = weather;
+    }
+
+    public String getReadableDateTime(int position) {
+        if (position == 1) {
+            return "Tommorow";
+        } else {
+            Date date = new Date(this.dt * 1000L);
+            DateFormat dateFormat = new SimpleDateFormat("EEEE");
+            return dateFormat.format(date);
+        }
+    }
+
+    public String getTodayReadableTime() {
+        Date date = new Date(dt * 1000L);
+        DateFormat dateFormat = new SimpleDateFormat("MMM dd");
+        return "Today, "+dateFormat.format(date);
     }
 }

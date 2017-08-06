@@ -23,4 +23,9 @@ public class Temp {
     public void setMax(Double max) {
         this.max = max;
     }
+
+    public String getResolvedTemp(double temp) {
+        int result = (int) temp;
+        return result + "\u00b0";
+    }
 }
