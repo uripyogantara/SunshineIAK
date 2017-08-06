@@ -7,5 +7,8 @@
     tools:context="com.example.satyakresna.sunshineiak.MainActivity">
 
     <!-- Let's create RecyclerView -->
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_forecast"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>
