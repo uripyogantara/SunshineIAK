@@ -50,7 +50,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return dummyForecastList.size();
     }
 
-    private class ForecastViewHolder extends RecyclerView.ViewHolder {
+    public class ForecastViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_weather_icon) ImageView weatherIcon;
         @BindView(R.id.tv_day) TextView day;
         @BindView(R.id.tv_weather) TextView weather;
