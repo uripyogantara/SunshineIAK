@@ -13,6 +13,9 @@ import com.example.satyakresna.sunshineiak.model.DummyForecast;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by satyakresna on 06-Aug-17.
  */
@@ -48,19 +51,15 @@ public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private class ForecastViewHolder extends RecyclerView.ViewHolder {
-        ImageView weatherIcon;
-        TextView day;
-        TextView weather;
-        TextView minTemp;
-        TextView maxTemp;
+        @BindView(R.id.iv_weather_icon) ImageView weatherIcon;
+        @BindView(R.id.tv_day) TextView day;
+        @BindView(R.id.tv_weather) TextView weather;
+        @BindView(R.id.tv_max_temp) TextView maxTemp;
+        @BindView(R.id.tv_min_temp) TextView minTemp;
 
         public ForecastViewHolder(View itemView) {
             super(itemView);
-            weatherIcon = (ImageView) itemView.findViewById(R.id.iv_weather_icon);
-            day = (TextView) itemView.findViewById(R.id.tv_day);
-            weather = (TextView) itemView.findViewById(R.id.tv_weather);
-            minTemp = (TextView) itemView.findViewById(R.id.tv_min_temp);
-            maxTemp = (TextView) itemView.findViewById(R.id.tv_max_temp);
+            ButterKnife.bind(this, itemView);
         }
 
         public void bind(DummyForecast dummyForecast) {
