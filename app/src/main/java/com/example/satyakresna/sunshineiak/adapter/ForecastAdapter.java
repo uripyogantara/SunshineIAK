@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.R.attr.data;
+import static android.R.attr.readPermission;
 import static android.R.attr.thickness;
 import static com.example.satyakresna.sunshineiak.R.string.day;
 import static com.example.satyakresna.sunshineiak.R.string.weather;
@@ -47,23 +48,9 @@ public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TODAY) {
-            Context context = parent.getContext();
-            int layoutFromListItem = R.layout.row_today_forecast;
-            LayoutInflater inflater = LayoutInflater.from(context);
-            boolean shouldAttachToParentImmediately = false;
-
-            View view = inflater.inflate(layoutFromListItem, parent, shouldAttachToParentImmediately);
-            TodayViewHolder viewHolder = new TodayViewHolder(view);
-            return viewHolder;
+            return new TodayViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.row_today_forecast, parent, false));
         } else {
-            Context context = parent.getContext();
-            int layoutFromListItem = R.layout.row_forecast_item;
-            LayoutInflater inflater = LayoutInflater.from(context);
-            boolean shouldAttachToParentImmediately = false;
-
-            View view = inflater.inflate(layoutFromListItem, parent, shouldAttachToParentImmediately);
-            ForecastViewHolder viewHolder = new ForecastViewHolder(view);
-            return viewHolder;
+            return new ForecastViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.row_forecast_item, parent, false));
         }
 
     }
