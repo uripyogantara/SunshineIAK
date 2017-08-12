@@ -13,5 +13,5 @@ public class Constant {
     public static final String PARAM_UNIT = "units=";
     public static final String PARAM_QUERY = "q";
     public static final String PARAM_API_KEY = "appid=";
-    public static final String API_KEY = "YOUR_API_KEY";
+    public static final String API_KEY = "e6f0f1cd452a7f5de27d1cbe9c92fed7";
 }
