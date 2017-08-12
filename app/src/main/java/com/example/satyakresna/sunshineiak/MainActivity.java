@@ -1,5 +1,6 @@
 package com.example.satyakresna.sunshineiak;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,7 +29,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+implements ForecastAdapter.ItemClickListener {
     public static final String TAG = MainActivity.class.getSimpleName();
     public List<WeatherItem> weatherItemList = new ArrayList<>();
     @BindView(R.id.rv_forecast) RecyclerView mRecyclerView;
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-        mAdapter = new ForecastAdapter(weatherItemList);
+        mAdapter = new ForecastAdapter(weatherItemList, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
         mRecyclerView.setLayoutManager(layoutManager);
@@ -93,5 +96,13 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void onItemClick(WeatherItem data, int position) {
+        Intent startDetailActivity = new Intent(MainActivity.this, DetailActivity.class);
+        startDetailActivity.putExtra("data", gson.toJson(data));
+        startDetailActivity.putExtra("position", position);
+        startActivity(startDetailActivity);
     }
 }

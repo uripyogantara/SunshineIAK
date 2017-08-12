@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.R.attr.data;
+import static android.R.attr.thickness;
 import static com.example.satyakresna.sunshineiak.R.string.day;
 import static com.example.satyakresna.sunshineiak.R.string.weather;
 
@@ -32,9 +33,15 @@ public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private static final int VIEW_TODAY = 0;
     private static final int VIEW_OTHER = 1;
+    private final ItemClickListener mOnClickListener;
 
-    public ForecastAdapter(List<WeatherItem> weatherItemList) {
+    public interface ItemClickListener {
+        void onItemClick(WeatherItem data, int position);
+    }
+
+    public ForecastAdapter(List<WeatherItem> weatherItemList, ItemClickListener mOnClickListener) {
         this.weatherItemList = weatherItemList;
+        this.mOnClickListener = mOnClickListener;
     }
 
     @Override
@@ -64,9 +71,9 @@ public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == VIEW_TODAY) {
-            ((TodayViewHolder) holder).bind(weatherItemList.get(position));
+            ((TodayViewHolder) holder).bind(weatherItemList.get(position), mOnClickListener);
         } else {
-            ((ForecastViewHolder) holder).bind(weatherItemList.get(position), position);
+            ((ForecastViewHolder) holder).bind(weatherItemList.get(position), position,mOnClickListener);
         }
     }
 
@@ -95,7 +102,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(WeatherItem data, final int position) {
+        public void bind(final WeatherItem data, final int position, final ItemClickListener itemClickListener) {
             weatherIcon.setImageResource(
                     SunshineWeatherUtils.getSmallArtResourceIdForWeatherCondition(
                             data.getWeather().get(0).getId()
@@ -105,6 +112,12 @@ public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             weather.setText(data.getWeather().get(0).getDescription());
             minTemp.setText(data.getTemp().getResolvedTemp(data.getTemp().getMin()));
             maxTemp.setText(data.getTemp().getResolvedTemp(data.getTemp().getMax()));
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    itemClickListener.onItemClick(data, position);
+                }
+            });
         }
     }
 
@@ -119,7 +132,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(WeatherItem data) {
+        public void bind(final WeatherItem data, final ItemClickListener itemClickListener) {
             weatherIconToday.setImageResource(
                     SunshineWeatherUtils.getSmallArtResourceIdForWeatherCondition(
                             data.getWeather().get(0).getId()
@@ -129,6 +142,12 @@ public class ForecastAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             weatherToday.setText(data.getWeather().get(0).getDescription());
             minTempToday.setText(data.getTemp().getResolvedTemp(data.getTemp().getMin()));
             maxTempToday.setText(data.getTemp().getResolvedTemp(data.getTemp().getMax()));
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    itemClickListener.onItemClick(data, 0);
+                }
+            });
         }
     }
 }
